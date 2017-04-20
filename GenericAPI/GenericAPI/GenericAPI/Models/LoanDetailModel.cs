@@ -10,6 +10,6 @@ namespace GenericAPI.Models
         public int SecurityId { get; set; }
         public DateTime? DateOfLoan { get; set; }
         public string AccountType { get; set; }
-        public int LoanQty { get; set; }
+        public double LoanQty { get; set; }
     }
 }

@@ -41,7 +41,7 @@ namespace ClientApplication
                 dt.Columns.Add(new DataColumn("Security Id", typeof(int)));
                 dt.Columns.Add(new DataColumn("Date of Loan", typeof(DateTime)));
                 dt.Columns.Add(new DataColumn("Account type", typeof(string)));
-                dt.Columns.Add(new DataColumn("Loan Qty", typeof(int)));
+                dt.Columns.Add(new DataColumn("Loan Qty", typeof(double)));
                 foreach (LoanDetailModel response in retrievedModel)
                 {
                     dr = dt.NewRow();

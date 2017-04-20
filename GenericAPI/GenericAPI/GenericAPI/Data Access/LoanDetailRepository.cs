@@ -86,19 +86,41 @@ namespace GenericAPI.Data_Access
                     else
                     {
                         List<LoanDetailModel> loanDetails = new List<LoanDetailModel>();
+                        List<LoanDetailModel> mergedLoanDetails = new List<LoanDetailModel>();
+
                         foreach (var result in oracleResultSet)
                         {
                             LoanDetailModel retrievedModel = new LoanDetailModel();
                             retrievedModel.AccountType = result.ACCNT;
                             retrievedModel.SecurityId = Convert.ToInt32(result.SEC_ID);
                             retrievedModel.DateOfLoan = result.DATE_OF_LOAN;
-                            foreach (var sqlServerResult in sqlServerResultSet)
-                            {
-                                retrievedModel.LoanQty = sqlServerResult.LoanQty;
-                            }
                             loanDetails.Add(retrievedModel);
                         }
-                        return loanDetails;
+
+                        for (int i = 0; i < loanDetails.Count; i++)
+                        {
+                            for (int j = i; j <= sqlServerResultSet.Count; j++)
+                            {
+                                if (loanDetails[j].AccountType.Equals("A", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    loanDetails[j].LoanQty = (sqlServerResultSet[j].LoanQty / 100) * 5;
+                                }
+
+                                if (loanDetails[j].AccountType.Equals("B", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    loanDetails[j].LoanQty = (sqlServerResultSet[j].LoanQty / 100) * 7;
+                                }
+
+                                if (loanDetails[j].AccountType.Equals("C", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    loanDetails[j].LoanQty = (sqlServerResultSet[j].LoanQty / 100) * 7.5;
+                                }
+                                break; 
+                            }
+                            mergedLoanDetails.Add(loanDetails[i]);
+                        }
+
+                        return mergedLoanDetails;
                     }
                 }
                 return null;
