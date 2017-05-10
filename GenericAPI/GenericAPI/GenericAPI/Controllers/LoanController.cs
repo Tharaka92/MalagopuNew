@@ -1,5 +1,6 @@
 ﻿using GenericAPI.Data_Access;
 using GenericAPI.Models;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace GenericAPI.Controllers
     {
         WebAPIConfigRepository apiConfigurationsRepository = null;
         LoanDetailRepository loanDetailRepository = null;
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public LoanController()
         {
@@ -31,29 +34,32 @@ namespace GenericAPI.Controllers
         {
             try
             {
-                WebApiConfigModel retrievedConfigs = apiConfigurationsRepository.Retrieve(serviceId);
-                if (retrievedConfigs != null)
-                {
-                    IEnumerable<LoanDetailModel> retrievedLoanDetails = loanDetailRepository.Retrieve(retrievedConfigs, securityId);
+                //WebApiConfigModel retrievedConfigs = apiConfigurationsRepository.Retrieve(serviceId);
+                //if (retrievedConfigs != null)
+                //{
+                //    IEnumerable<LoanDetailModel> retrievedLoanDetails = loanDetailRepository.Retrieve(retrievedConfigs, securityId);
 
-                    if (writeDataFlag)
-                    {
-                        foreach (LoanDetailModel modelToSave in retrievedLoanDetails)
-                        {
-                            loanDetailRepository.Create(modelToSave);
-                        }
-                    }
-                    return Content(HttpStatusCode.OK, retrievedLoanDetails, Configuration.Formatters.XmlFormatter);
-                }
-                return null;
+                //    if (writeDataFlag)
+                //    {
+                //        foreach (LoanDetailModel modelToSave in retrievedLoanDetails)
+                //        {
+                //            loanDetailRepository.Create(modelToSave);
+                //        }
+                //    }
+                //    return Content(HttpStatusCode.OK, retrievedLoanDetails, Configuration.Formatters.XmlFormatter);
+                //}
+                //return null;
+                throw new DivideByZeroException();
             }
-            catch (Exception ex)
+            catch (DivideByZeroException ex)
             {
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                {
-                    Content = new StringContent("An error occurred, please try again or contact the administrator."),
-                    ReasonPhrase = "Critical Exception"
-                });
+                logger.ErrorException("Exception Occured", ex);
+                return null;
+                //throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                //{
+                //    Content = new StringContent("An error occurred, please try again or contact the administrator."),
+                //    ReasonPhrase = "Critical Exception"
+                //});
             }
         }
 
